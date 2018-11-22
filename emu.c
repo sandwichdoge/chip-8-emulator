@@ -78,76 +78,76 @@ void interpret(unsigned short opcode)
             sp++;
             jump(opcode & 0x0fff);
         case 0x3000: //3XNN skip the next instruction if VX equals NN
-            if (V[opcode & 0x0f00] == opcode & 0x00ff) PC += 2;
+            if (V[op2] == opcode & 0x00ff) PC += 2;
         case 0x4000: //4XNN skip the next instruction if VX equals NN
-            if (V[opcode & 0x0f00] != opcode & 0x00ff) PC += 2;
+            if (V[op2] != opcode & 0x00ff) PC += 2;
         case 0x5000: //5XY0 skip the next instruction if VX equals VY
-            if (V[opcode & 0x0f00] == V[opcode & 0x00f0]) PC += 2;
+            if (V[op2] == V[opcode & 0x00f0]) PC += 2;
         case 0x6000: //6XNN set VX = NN
-            V[opcode & 0x0f00] = opcode & 0x00ff;
+            V[op2] = opcode & 0x00ff;
         case 0x7000: //7XNN add NN to VX
-            V[opcode & 0x0f00] += opcode & 0x00ff;
+            V[op2] += opcode & 0x00ff;
         case 0x8000:
             switch (op4) {
                 case 0: //0x8XY0 set VX = VY
-                    V[opcode & 0x0f00] = V[opcode & 0x00f0];
+                    V[op2] = V[opcode & 0x00f0];
                 case 1: //0x8XY1 BitOR VX |= VY
-                    V[opcode & 0x0f00] |= V[opcode & 0x00f0];
+                    V[op2] |= V[opcode & 0x00f0];
                 case 2: //0x8XY2 BitAND VX &= VY
-                    V[opcode & 0x0f00] &= V[opcode & 0x00f0];
+                    V[op2] &= V[opcode & 0x00f0];
                 case 3: //0x8XY3 BitXOR VX ^= VY
-                    V[opcode & 0x0f00] ^= V[opcode & 0x00f0];
+                    V[op2] ^= V[opcode & 0x00f0];
                 case 4: //0x8XY4 add VX += VY
-                    V[opcode & 0x0f00] += V[opcode & 0x00f0];
+                    V[op2] += V[opcode & 0x00f0];
                 case 5: //0x8XY4 substract VX -= VY
-                    V[opcode & 0x0f00] -= V[opcode & 0x00f0];
+                    V[op2] -= V[opcode & 0x00f0];
                 case 6: //0x8XY6 bitshift-right VX >>= 1
-                    V[opcode & 0x0f00] >>= 1;
+                    V[op2] >>= 1;
                 case 7: //0x8XY7 VX = VY - VX
-                    V[opcode & 0x0f00] = V[opcode & 0x00f0] - V[opcode & 0x0f00];
+                    V[op2] = V[opcode & 0x00f0] - V[op2];
                 case 0xe:
-                    V[opcode & 0x0f00] <<= 1;
+                    V[op2] <<= 1;
             }
         case 0x9000: //if(VX!=VY)
-            if (V[opcode & 0x0f00] != V[opcode & 0x00f0]) PC += 2;
+            if (V[op2] != V[opcode & 0x00f0]) PC += 2;
         case 0xa000: //set pointer I = NNN
             I = opcode & 0x0fff;
         case 0xb000: //PC = V0 + NNN
             PC = V[0] + opcode & 0x0fff;
         case 0xc000:
-            V[opcode & 0x0f00] = random_byte() & (opcode & 0x00ff);
+            V[op2] = random_byte() & (opcode & 0x00ff);
         case 0xd000:
-            draw(opcode & 0x0f00, opcode & 0x00f0, opcode & 0x000f);
+            draw(op2, opcode & 0x00f0, opcode & 0x000f);
         case 0xe000:
             switch (op4) {
                 case 0xe:
-                    if (V[opcode & 0x0f00] == key()) PC += 2;
+                    if (V[op2] == key()) PC += 2;
                 case 0x1:
-                    if (V[opcode & 0x0f00] != key()) PC += 2;
+                    if (V[op2] != key()) PC += 2;
             }
         case 0xf000:
             switch (opcode & 0x00ff) {
                 case 0x07:
-                    V[opcode & 0x0f00] = get_delay();
+                    V[op2] = get_delay();
                 case 0x0a:
-                    V[opcode & 0x0f00] = get_key();
+                    V[op2] = get_key();
                 case 0x15:
-                    delay_timer(V[opcode & 0x0f00]);
+                    delay_timer(V[op2]);
                 case 0x18:
-                    sound_timer(V[opcode & 0x0f00]);
+                    sound_timer(V[op2]);
                 case 0x1e:
-                    I += V[opcode & 0x0f00];
+                    I += V[op2];
                 /*case 0x29:
-                    I = sprite_addr[V[opcode & 0x0f00]];*/
+                    I = sprite_addr[V[op2]];*/
                 case 0x33:
-                    set_BCD(V[opcode & 0x0f00]);
+                    set_BCD(V[op2]);
                     mem[I] = BCD(3);
                     mem[I+1] = BCD(2);
                     mem[I+2] = BCD(1);
                 case 0x55:
-                    reg_dump(V[opcode & 0x0f00], I);
+                    reg_dump(V[op2], I);
                 case 0x65:
-                    reg_load(V[opcode & 0x0f00], I);
+                    reg_load(V[op2], I);
             }
 
     }
